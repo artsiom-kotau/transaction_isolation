@@ -1,14 +1,17 @@
 package com.itechart.transactionisolation;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.util.Collection;
-import java.util.concurrent.BrokenBarrierException;
-import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.CountDownLatch;
 
+@Service
+@Slf4j
 public class SellService {
 
     private static final BigDecimal DIFF = BigDecimal.valueOf(10);
@@ -19,23 +22,29 @@ public class SellService {
     @Autowired
     private EntityManager entityManager;
 
-    private CyclicBarrier cyclicBarrier;
-
-    public SellService(CyclicBarrier cyclicBarrier) {
-        this.cyclicBarrier = cyclicBarrier;
-    }
+    @Autowired
+    private CountDownLatch latch;
 
     @Transactional
-    public void updatePrice() throws BrokenBarrierException, InterruptedException {
+    public void updatePrice() {
+        log.info("Start price updating. Thread '{}'", Thread.currentThread().getName());
         Collection<Product> products = productRepository.findAll();
         products.forEach(this::updatePrice);
         entityManager.flush();
-        cyclicBarrier.await();
+        log.info("Flash changes and wait for order transaction");
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            log.error("Something wrong");
+            Thread.currentThread().interrupt();
+        }
+        log.error("Rollback changes");
         throw new RuntimeException("Unexpected exception");
 
     }
 
     private void updatePrice(Product product) {
+        log.info("Update price");
         BigDecimal currentPrice = product.getPrice();
         product.setPrice(currentPrice.add(DIFF));
     }
