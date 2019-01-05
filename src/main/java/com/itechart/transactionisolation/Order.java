@@ -6,7 +6,7 @@ import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "order")
+@Table(name = "product_order")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -15,11 +15,8 @@ import java.math.BigDecimal;
 public class Order {
 
     @Id
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
 
     @Column
     private Long amount;

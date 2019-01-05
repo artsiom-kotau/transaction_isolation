@@ -2,10 +2,13 @@ package com.itechart.transactionisolation;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.concurrent.CountDownLatch;
@@ -30,6 +33,7 @@ public class SellService {
         log.info("Start price updating. Thread '{}'", Thread.currentThread().getName());
         Collection<Product> products = productRepository.findAll();
         products.forEach(this::updatePrice);
+        productRepository.saveAll(products);
         entityManager.flush();
         log.info("Flash changes and wait for order transaction");
         try {

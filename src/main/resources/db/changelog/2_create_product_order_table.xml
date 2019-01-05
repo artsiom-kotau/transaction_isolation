@@ -4,14 +4,14 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet id="create_order_table" author="akotau">
-        <createTable tableName="order" >
+    <changeSet id="create_product_order_table" author="akotau">
+        <createTable tableName="product_order" >
             <column name="id" type="bigint">
                 <constraints nullable="false" unique="true" primaryKey="true"/>
             </column>
-            <column name="product_id" type="bigint">
-                <constraints nullable="false"/>
-            </column>
+            <!--<column name="product_id" type="bigint">-->
+                <!--<constraints nullable="false"/>-->
+            <!--</column>-->
             <column name="amount" type="int">
                 <constraints nullable="false"/>
             </column>
@@ -23,10 +23,10 @@
                           columnName="id"
                           incrementBy="1"
                           startWith="1"
-                          tableName="order"/>
-        <addForeignKeyConstraint baseTableName="order" baseColumnNames="product_id" constraintName="fk_product_id"
-                                 referencedTableName="product"
-                                 referencedColumnNames="id"/>
+                          tableName="product_order"/>
+        <!--<addForeignKeyConstraint baseTableName="product_order" baseColumnNames="product_id" constraintName="fk_product_id"-->
+                                 <!--referencedTableName="product"-->
+                                 <!--referencedColumnNames="id"/>-->
     </changeSet>
 
 </databaseChangeLog>
