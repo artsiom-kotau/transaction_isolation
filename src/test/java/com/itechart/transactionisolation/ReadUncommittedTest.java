@@ -11,7 +11,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles("mysql")
-public class TransactionIsolationApplicationTests {
+public class ReadUncommittedTest {
 
     private static Long PRODUCT_ID = 1l;
     private static Long AMOUNT = 10l;

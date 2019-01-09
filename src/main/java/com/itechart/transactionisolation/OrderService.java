@@ -22,7 +22,7 @@ public class OrderService {
     public void doOrder(Long productId, Long amount) {
         Product product = productRepository.findById(productId).get();
         log.info("Get product");
-        Order order = Order.builder().price(product.getPrice()).amount(amount).build();
+        Order order = Order.builder().product(product).price(product.getPrice()).amount(amount).build();
         orderRepository.save(order);
         log.info("Save order");
     }
